@@ -22,4 +22,4 @@ COPY src ./etc/backend/wait-for-it.sh ./etc/backend/entrypoint.sh ./
 
 
 ENTRYPOINT ["./entrypoint.sh"]
-CMD ["uvicorn", "room_booking.webapp:app", "--reload"]
+CMD ["uvicorn", "room_booking.webapp:app", "--reload", "--host", "0.0.0.0", "--port", "5050"]
