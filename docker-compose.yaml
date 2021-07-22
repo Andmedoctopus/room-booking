@@ -1,6 +1,23 @@
 version: "3.8"
 
 services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./etc/backend/Dockerfile
+    env_file:
+      - ./etc/backend/env/dev.env
+      - ./etc/db/env/dev.env
+    depends_on:
+      - db
+    volumes:
+      - ./src/room_booking:/home/room_booking/room_booking
+      - ./src/tests:/home/room_booking/tests
+    ports:
+      - 5050:5050
+
+
+
   db:
     image: postgres:13.3
     volumes:
