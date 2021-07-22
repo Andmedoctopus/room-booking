@@ -19,3 +19,6 @@ fix-imports:
 
 flake8:
 	docker-compose run --rm app flake8 ${PROJECT_CODE_PATH}
+
+migrate:
+	docker-compose run --rm app alembic upgrade head

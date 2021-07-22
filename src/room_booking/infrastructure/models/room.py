@@ -1,12 +1,12 @@
-from sqlalchemy import Column, Integer, MetaData, Sequence, String, Table
+from sqlalchemy import Column, Integer, Sequence, String, Table
 
-metadata = MetaData()
+from room_booking.infrastructure.datasource import metadata
 
-
+room_id_seq = Sequence("room_id_seq")
 room_table = Table(
     "room",
     metadata,
-    Column("id", Integer, Sequence("room_id_seq", metadata=metadata), primary_key=True),
+    Column("id", Integer, room_id_seq, primary_key=True),
     Column("name", String),
     Column("floor", Integer, nullable=False),
     Column("number", Integer, nullable=False),

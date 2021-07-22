@@ -13,6 +13,7 @@ services:
     volumes:
       - ./src/room_booking:/home/room_booking/room_booking
       - ./src/tests:/home/room_booking/tests
+      - ./src/alembic:/home/room_booking/alembic
     ports:
       - 5050:5050
 
