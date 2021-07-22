@@ -6,7 +6,7 @@ Create Date: 2021-07-22 22:13:53.591899
 
 """
 from alembic import op
-from sqlalchemy import Column,  Sequence, Integer, String, text
+from sqlalchemy import Column,Integer, String, text
 from sqlalchemy.schema import CreateSequence
 from room_booking.infrastructure.models.room import room_id_seq
 
