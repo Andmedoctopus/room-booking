@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from room_booking.src
 
 
 router = APIRouter(
@@ -10,4 +9,4 @@ router = APIRouter(
 
 @router.get("/")
 async def read_items():
-    return 
+    return 'Hi'
