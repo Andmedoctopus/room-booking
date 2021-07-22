@@ -14,5 +14,8 @@ format:
 format-check:
 	docker-compose run --rm app sh -c "black --check ${PROJECT_CODE_PATH} && isort --check ${PROJECT_CODE_PATH}"
 
+fix-imports:
+	docker-compose run --rm app autoflake -r --in-place --ignore-init-module-imports --remove-all-unused-imports ${PROJECT_CODE_PATH}
+
 flake8:
 	docker-compose run --rm app flake8 ${PROJECT_CODE_PATH}
