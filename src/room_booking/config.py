@@ -18,8 +18,8 @@ class DatabaseSettings(BaseSettings):
             database=self.DB,
         )
 
-    class Meta:
-        prefix = "POSTGRES_APP"
+    class Config:
+        env_prefix = "POSTGRES_APP_"
 
 
 class Settings(BaseSettings):
