@@ -1,8 +1,4 @@
-from dependency_injector import containers, providers
-
-
-class Core(containers.DeclarativeContainer):
-    config = providers.Configuration()
+from dependency_injector import containers
 
 
 class Repository(containers.DeclarativeContainer):
