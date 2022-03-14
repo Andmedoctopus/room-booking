@@ -1,0 +1,1 @@
+ROOM_ID_FIELD_NAME = "id"

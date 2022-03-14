@@ -8,6 +8,8 @@ from room_booking.domain.exceptions import RoomNotFound
 from room_booking.domain.interfaces import IRoomRepository
 from room_booking.infrastructure.datasource import get_connection
 from room_booking.infrastructure.models import room_table
+from room_booking.infrastructure.repositories.room.constants import \
+    ROOM_ID_FIELD_NAME
 from room_booking.infrastructure.repositories.room.mapper import \
     build_room_entity
 
@@ -17,7 +19,7 @@ class RoomRepository(IRoomRepository):
         values = []
         for room in rooms:
             room_as_dict = asdict(room)
-            room_as_dict.pop("id")
+            room_as_dict.pop(ROOM_ID_FIELD_NAME)
             values.append(room_as_dict)
 
         insert_query = insert(room_table).returning(room_table.c.id)
@@ -61,7 +63,7 @@ class RoomRepository(IRoomRepository):
         self, room_filter: RoomEntityFilter, set_room: RoomEntityFilter
     ) -> None:
         values = asdict(set_room)
-        values.pop("id")
+        values.pop(ROOM_ID_FIELD_NAME)
 
         update_query = self._patch_query_by_filter(update(room_table), room_filter)
         update_query = update_query.values(values)
