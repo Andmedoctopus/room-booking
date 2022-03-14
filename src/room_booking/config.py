@@ -1,5 +1,9 @@
 from pydantic import BaseSettings
 
+DB_CONNECTION_TEMPLATE = (
+    "{engine}+{dialect}://{username}:{password}@{host}:{port}/{database}"
+)
+
 
 class DatabaseSettings(BaseSettings):
     HOST: str
@@ -10,7 +14,9 @@ class DatabaseSettings(BaseSettings):
 
     @property
     def url(self):
-        return "postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}".format(
+        return DB_CONNECTION_TEMPLATE.format(
+            engine="postgresql",
+            dialect="psycopg2",
             username=self.USER,
             password=self.PASSWORD,
             host=self.HOST,
