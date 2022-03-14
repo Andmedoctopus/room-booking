@@ -1,7 +1,16 @@
 FROM python:3.9-buster
 
-ARG APP_USER=room_booking
-ARG APP_GROUP=room_booking
+ARG APP_USER=room_booking\
+    APP_GROUP=room_booking
+
+ENV YOUR_ENV=${YOUR_ENV} \
+    PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    POETRY_VERSION=1.1.0
 
 RUN apt-get update && \
     apt-get install -y netcat # for wait-for-it script
@@ -15,11 +24,13 @@ RUN chown -R $APP_USER:$APP_GROUP $APP_HOME
 USER $APP_USER
 ENV PATH="$PATH:$APP_HOME/.local/bin"
 
-COPY  src/requirements ./requirements
-RUN pip install --user --no-cache pip==21.1.3 -r requirements/dev.txt
+RUN pip install -U pip && pip install "poetry==$POETRY_VERSION"
 
-COPY src ./etc/backend/wait-for-it.sh ./etc/backend/entrypoint.sh ./
+COPY --chown=$APP_USER ./poetry.lock ./pyproject.toml ./
+RUN poetry config virtualenvs.create false && poetry install
 
+COPY src ./etc/backend/wait-for-it.sh ./etc/backend/entrypoint.sh tox.ini ./
 
 ENTRYPOINT ["./entrypoint.sh"]
+
 CMD ["uvicorn", "room_booking.webapp:app", "--reload", "--host", "0.0.0.0", "--port", "5050"]
