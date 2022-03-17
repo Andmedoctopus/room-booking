@@ -10,10 +10,12 @@ ENV YOUR_ENV=${YOUR_ENV} \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.1.0
+    POETRY_VERSION=1.1.13
 
 RUN apt-get update && \
-    apt-get install -y netcat # for wait-for-it script
+    apt-get install -y \
+    netcat \
+    libpq-dev python-dev
 
 RUN groupadd $APP_GROUP && useradd -m -s /bin/bash -g $APP_GROUP $APP_USER
 
