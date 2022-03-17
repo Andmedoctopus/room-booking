@@ -8,10 +8,8 @@ from room_booking.domain.exceptions import RoomNotFound
 from room_booking.domain.interfaces import IRoomRepository
 from room_booking.infrastructure.datasource import get_connection
 from room_booking.infrastructure.models import room_table
-from room_booking.infrastructure.repositories.room.constants import \
-    ROOM_ID_FIELD_NAME
-from room_booking.infrastructure.repositories.room.mapper import \
-    build_room_entity
+from room_booking.infrastructure.repositories.room.constants import ROOM_ID_FIELD_NAME
+from room_booking.infrastructure.repositories.room.mapper import build_room_entity
 
 
 class RoomRepository(IRoomRepository):
