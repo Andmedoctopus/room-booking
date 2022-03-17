@@ -4,7 +4,7 @@ from typing import Optional
 
 @dataclass
 class RoomEntity:
-    id: int
+    room_id: int
     name: str
     floor: Optional[int] = None
     number: Optional[int] = None
@@ -12,7 +12,7 @@ class RoomEntity:
 
 @dataclass
 class RoomEntityFilter:
-    id: Optional[int] = None
+    room_id: Optional[int] = None
     name: Optional[str] = None
     floor: Optional[int] = None
     number: Optional[int] = None

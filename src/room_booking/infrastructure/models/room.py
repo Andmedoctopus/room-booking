@@ -6,7 +6,7 @@ room_id_seq = Sequence("room_id_seq")
 room_table = Table(
     "room",
     metadata,
-    Column("id", Integer, room_id_seq, primary_key=True),
+    Column("room_id", Integer, room_id_seq, primary_key=True),
     Column("name", String),
     Column("floor", Integer, nullable=False),
     Column("number", Integer, nullable=False),
