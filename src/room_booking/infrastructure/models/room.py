@@ -10,4 +10,6 @@ room_table = Table(
     Column("name", String),
     Column("floor", Integer, nullable=False),
     Column("number", Integer, nullable=False),
+    Column("longitude", String, nullable=True),
+    Column("latitude", String, nullable=True),
 )

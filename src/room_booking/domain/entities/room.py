@@ -1,13 +1,21 @@
 from dataclasses import dataclass
+from decimal import Decimal
 from typing import Optional
+
+
+@dataclass
+class Cordinate:
+    longitude: Decimal
+    latitude: Decimal
 
 
 @dataclass
 class RoomEntity:
     room_id: int
     name: str
-    floor: Optional[int] = None
-    number: Optional[int] = None
+    floor: int
+    number: int
+    cordinate: Optional[Cordinate] = None
 
 
 @dataclass
@@ -16,3 +24,5 @@ class RoomEntityFilter:
     name: Optional[str] = None
     floor: Optional[int] = None
     number: Optional[int] = None
+    cordinate: Optional[Cordinate] = None
+
