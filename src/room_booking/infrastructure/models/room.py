@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Sequence, String, Table
 
-from room_booking.infrastructure.datasource import metadata
+from room_booking.infrastructure.models import metadata
 
 room_id_seq = Sequence("room_id_seq")
 room_table = Table(

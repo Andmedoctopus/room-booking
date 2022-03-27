@@ -10,7 +10,7 @@ class IRoomService(ABC):
         pass
 
     @abstractclassmethod
-    def get_room_list(self, room_filter: RoomEntityFilter) -> List[RoomEntity]:
+    def get_rooms(self, room_filter: RoomEntityFilter) -> List[RoomEntity]:
         pass
 
     @abstractclassmethod

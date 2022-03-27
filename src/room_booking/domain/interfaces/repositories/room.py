@@ -1,20 +1,20 @@
 from abc import ABC, abstractclassmethod
-from typing import List
+from typing import List, Optional
 
 from room_booking.domain.entities import RoomEntity, RoomEntityFilter
 
 
 class IRoomRepository(ABC):
     @abstractclassmethod
-    def create(self) -> int:
+    def create(self) -> List[int]:
         pass
 
     @abstractclassmethod
-    def get_room_list(self, room_filter: RoomEntityFilter) -> List[RoomEntity]:
+    def get_rooms(self, room_filter: Optional[RoomEntityFilter] = None) -> List[RoomEntity]:
         pass
 
     @abstractclassmethod
-    def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
+    def get_room(self, room_filter: Optional[RoomEntityFilter] = None) -> RoomEntity:
         pass
 
     @abstractclassmethod

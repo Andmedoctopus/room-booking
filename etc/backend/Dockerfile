@@ -3,8 +3,7 @@ FROM python:3.9-buster
 ARG APP_USER=room_booking\
     APP_GROUP=room_booking
 
-ENV YOUR_ENV=${YOUR_ENV} \
-    PYTHONFAULTHANDLER=1 \
+ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
     PIP_NO_CACHE_DIR=off \
@@ -24,7 +23,7 @@ WORKDIR $APP_HOME
 
 RUN chown -R $APP_USER:$APP_GROUP $APP_HOME
 USER $APP_USER
-ENV PATH="$PATH:$APP_HOME/.local/bin"
+ENV PATH="$PATH:$APP_HOME/.local/bin:$APP_HOME"
 
 RUN pip install -U pip && pip install "poetry==$POETRY_VERSION"
 
@@ -35,4 +34,4 @@ COPY src ./etc/backend/wait-for-it.sh ./etc/backend/entrypoint.sh tox.ini ./
 
 ENTRYPOINT ["./entrypoint.sh"]
 
-CMD ["uvicorn", "room_booking.webapp:app", "--reload", "--host", "0.0.0.0", "--port", "5050"]
+CMD ["uvicorn", "room_booking.webapp:create_app", "--reload", "--host", "0.0.0.0", "--port", "5050"]

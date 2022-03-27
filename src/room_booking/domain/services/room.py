@@ -14,8 +14,8 @@ class RoomService(IRoomService):
     def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
         return self._room_repository.get_room(room_filter)
 
-    def get_room_list(self, room_filter: RoomEntityFilter) -> List[RoomEntity]:
-        return self._room_repository.get_room_list(room_filter)
+    def get_rooms(self, room_filter: RoomEntityFilter) -> List[RoomEntity]:
+        return self._room_repository.get_rooms(room_filter)
 
     def update_room(
         self, room_filter: RoomEntityFilter, set_room: RoomEntityFilter

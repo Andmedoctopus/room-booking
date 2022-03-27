@@ -1,1 +1,1 @@
-from .room import RoomEntity, RoomEntityFilter
+from .room import RoomEntity, RoomEntityFilter, Cordinate

@@ -13,13 +13,13 @@ router = APIRouter(prefix="/rooms", tags=["rooms"])
 
 @router.get("/")
 @inject
-async def get_room_list(
+async def get_rooms(
     room_service: IRoomService = Depends(Provide[Services.room]),
 ) -> List[RoomSerializer]:
-    rooms = room_service.get_room_list(RoomEntityFilter())
+    rooms = room_service.get_rooms(RoomEntityFilter())
     serialized_rooms = [
         RoomSerializer(
-            id=room.id,
+            id=room.room_id,
             name=room.name,
             floor=room.floor,
             number=room.number,
@@ -36,7 +36,7 @@ async def get_room(
 ) -> RoomSerializer:
     room = room_service.get_room(RoomEntityFilter(id=room_id))
     return RoomSerializer(
-        id=room.id,
+        id=room.room_id,
         name=room.name,
         floor=room.floor,
         number=room.number,
@@ -79,7 +79,7 @@ async def update_room(
     )
     room = room_service.get_room(RoomEntityFilter(id=room_id))
     return RoomSerializer(
-        id=room.id,
+        id=room.room_id,
         name=room.name,
         floor=room.floor,
         number=room.number,
