@@ -6,13 +6,17 @@ from room_booking.infrastructure.repositories.room.constants import RoomFields
 from room_booking.domain.constants import DomainFields
 
 
+def build_cordinate(room_obj):
+    if room_obj.longitude is None and room_obj.latitude is None:
+        return None
+    return Cordinate(
+        longitude=Decimal(room_obj.longitude),
+        latitude=Decimal(room_obj.latitude),
+    )
 def build_room_entity(room_obj) -> RoomEntity:
     return RoomEntity(
         room_id=room_obj.room_id, name=room_obj.name, floor=room_obj.floor, number=room_obj.number,
-        cordinate=Cordinate(
-            longitude=Decimal(room_obj.longitude),
-            latitude=Decimal(room_obj.latitude),
-            )
+        cordinate=build_cordinate(room_obj)
     )
 
 

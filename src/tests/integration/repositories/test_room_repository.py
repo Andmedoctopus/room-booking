@@ -51,6 +51,13 @@ def test_create_multiple_room__get_same_entitis__pass(room_repository, room_enti
 
     assert created_room_entity == room_repository.get_rooms()
 
+def test_create_room_with_empty_cordinates(room_repository, room_entity):
+    room_entity = replace(room_entity, cordinate=None)
+    room_ids = room_repository.create([room_entity])
+    room_entity = replace(room_entity, room_id=room_ids[0])
+
+    assert room_entity == room_repository.get_room(RoomEntityFilter(room_id=room_entity.room_id))
+    assert [room_entity] == room_repository.get_rooms()
 
 def test_update_name__pass(room_repository, created_room, room_entity):
     search_id = created_room.room_id
