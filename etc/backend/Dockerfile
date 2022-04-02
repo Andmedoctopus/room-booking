@@ -3,7 +3,8 @@ FROM python:3.9-buster
 ARG APP_USER=room_booking\
     APP_GROUP=room_booking
 
-ENV PYTHONFAULTHANDLER=1 \
+ENV APP_HOME=/home/$APP_USER \
+    PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
     PIP_NO_CACHE_DIR=off \
@@ -18,7 +19,6 @@ RUN apt-get update && \
 
 RUN groupadd $APP_GROUP && useradd -m -s /bin/bash -g $APP_GROUP $APP_USER
 
-ENV APP_HOME=/home/$APP_USER
 WORKDIR $APP_HOME
 
 RUN chown -R $APP_USER:$APP_GROUP $APP_HOME

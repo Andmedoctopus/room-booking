@@ -36,12 +36,10 @@ class DataSource:
         )
 
     def init_engine(self):
-        if self._db_engine is None:
-            self._db_engine: Engine = create_engine(self.get_connection_string())
+        self._db_engine: Engine = create_engine(self.get_connection_string())
 
     def init_connection(self):
-        if self._connection is None:
-            self._connection: Connection = self._db_engine.connect()
+        self._connection: Connection = self._db_engine.connect()
 
     def init(self):
         self.init_engine()
@@ -51,15 +49,9 @@ class DataSource:
         self._connection.close()
 
     @contextmanager
-    def open_transaction(self):
-        transaction = self._connection.begin()
-        try:
+    def open_connection(self):
+        with self._connection.begin():
             yield self._connection
-            transaction.commit()
-        except:
-            transaction.rollback()
-        finally:
-            transaction.close()
 
 
 

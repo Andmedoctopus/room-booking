@@ -1,15 +1,15 @@
 from dataclasses import asdict
 from typing import List, Optional
 
-from sqlalchemy import delete, insert, select, update
+from sqlalchemy import delete, insert, select, update, and_
 
-from room_booking.domain.entities import RoomEntity, RoomEntityFilter
+from room_booking.domain.entities import RoomEntity, RoomEntityFilter, RoomUpdateEntity
 from room_booking.domain.exceptions import RoomNotFound
 from room_booking.domain.interfaces import IRoomRepository
 from room_booking.infrastructure.datasource import DataSource
 from room_booking.infrastructure.models import room_table
 from room_booking.infrastructure.repositories.room.constants import RoomFields
-from room_booking.infrastructure.repositories.room.mapper import build_room_entity
+from room_booking.infrastructure.repositories.room.mapper import build_room_entity, build_dict_from_entity, build_update_dict_from_entity
 
 
 class RoomRepository(IRoomRepository):
@@ -29,30 +29,32 @@ class RoomRepository(IRoomRepository):
 
         if room_filter.number is not None:
             query = query.where(room_table.c.number == room_filter.number)
+
+        if room_filter.cordinate is not None:
+            query = query.where(
+                and_(
+                    (room_table.c.latitude == str(room_filter.cordinate.latitude)),
+                    (room_table.c.longitude == str(room_filter.cordinate.longitude)),
+                )
+            )
+
         return query
 
     def create(self, rooms: List[RoomEntity]) -> List[int]:
         insert_values = []
         for room in rooms:
-            room_as_dict = asdict(room)
-            room_as_dict.pop(RoomFields.ROOM_ID_FIELD_NAME.value)
-
-            for cord_name, value in room_as_dict.pop(RoomFields.CORDINATE.value).items():
-                room_as_dict[cord_name] = value
+            room_as_dict = build_dict_from_entity(room)
 
             insert_values.append(room_as_dict)
 
         insert_query = insert(room_table).returning(room_table.c.room_id)
 
-        with self._datasource.open_transaction() as conn:
+        with self._datasource.open_connection() as conn:
             rooms_obj = conn.execute(insert_query, insert_values)
 
         return [room.room_id for room in rooms_obj]
 
-    def get_room(self, room_filter: Optional[RoomEntityFilter] = None) -> RoomEntity:
-        if room_filter is None:
-            room_filter = RoomEntityFilter()
-
+    def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
         room_list = self.get_rooms(room_filter)
         if len(room_list) == 0:
             raise RoomNotFound(room_filter)
@@ -66,21 +68,20 @@ class RoomRepository(IRoomRepository):
 
         select_query = self._patch_query_by_filter(select([room_table]), room_filter)
 
-        with self._datasource.open_transaction() as conn:
+        with self._datasource.open_connection() as conn:
             rooms_obj = conn.execute(select_query)
 
         return [build_room_entity(room_obj) for room_obj in rooms_obj]
 
     def update_room(
-        self, room_filter: RoomEntityFilter, set_room: RoomEntityFilter
+        self, room_filter: RoomEntityFilter, set_room: RoomUpdateEntity
     ) -> None:
-        values = asdict(set_room)
-        values.pop(RoomFields.ROOM_ID_FIELD_NAME.value)
+        values = build_update_dict_from_entity(set_room)
 
         update_query = self._patch_query_by_filter(update(room_table), room_filter)
         update_query = update_query.values(values)
 
-        with self._datasource.open_transaction() as conn:
+        with self._datasource.open_connection() as conn:
             conn.execute(update_query)
 
     def delete_room(self, room_id: int) -> bool:
@@ -88,7 +89,7 @@ class RoomRepository(IRoomRepository):
             delete(room_table), RoomEntityFilter(room_id=room_id)
         )
 
-        with self._datasource.open_transaction() as conn:
+        with self._datasource.open_connection() as conn:
             conn.execute(delete_query)
 
         return True

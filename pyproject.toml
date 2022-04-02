@@ -26,6 +26,20 @@ autoflake = "^1.4"
 pytest-factoryboy = "^2.1.0"
 pytest-mock = "^3.7.0"
 coverage = "^6.3.2"
+mypy = "^0.942"
 
 [tool.isort]
 profile = "black"
+
+[tool.coverage.run]
+branch = true
+omit = ["*tests*", "*/domain/interfaces/*"]
+data_file = "room_booking/.coverage"
+
+[tool.coverage.html]
+directory = "room_booking/htmlcov"
+skip_covered = true
+
+[tool.coverage.report]
+skip_covered = true
+

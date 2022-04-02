@@ -7,9 +7,10 @@ from room_booking.webapp import init_dependency
 for factory_implementation in __all_facotories__:
     pytest_factoryboy.register(factory_implementation)
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def di():
-    return init_dependency()
+    with init_dependency() as di:
+        yield di
 
 @pytest.fixture
 def datasource(di):
@@ -17,9 +18,10 @@ def datasource(di):
 
 @pytest.fixture(scope="function", autouse=True)
 def transaction_rollback(datasource):
-    with datasource.open_transaction() as transaction:
-        yield
-        transaction.rollback()
+    with datasource.open_connection() as connection:
+        with connection.begin_nested() as nested:
+            yield
+            nested.rollback()
 
 @pytest.fixture
 def room_repository(di):

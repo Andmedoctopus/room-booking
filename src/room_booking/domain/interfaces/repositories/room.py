@@ -14,7 +14,7 @@ class IRoomRepository(ABC):
         pass
 
     @abstractclassmethod
-    def get_room(self, room_filter: Optional[RoomEntityFilter] = None) -> RoomEntity:
+    def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
         pass
 
     @abstractclassmethod

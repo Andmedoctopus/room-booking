@@ -1,9 +1,7 @@
 PROJECT_CODE_PATH=/home/room_booking/room_booking
 TEST_COMPOSE=docker-compose -f docker-compose.test.yaml -p tests
 RUN_APP=run --rm app
-COVERAGE_REPORT_PATH=room_booking/.coverage
-COVERAGE_REPORT_FLAG=--data-file ${COVERAGE_REPORT_PATH}
-COVERAGE_HTML_REPORT_PATH=${PROJECT_CODE_PATH}/htmlcov
+COVERAGE_DB_FILEPATH=./room_booking/.coverage
 
 .PHONY: build
 build:
@@ -82,14 +80,17 @@ test-migrate:
 
 .PHONY: test-unit
 test-unit:
-	${TEST_COMPOSE} ${RUN_APP} coverage run -a ${COVERAGE_REPORT_FLAG} -m pytest tests/unit
+	${TEST_COMPOSE} ${RUN_APP} coverage run -a -m pytest tests/unit
 
 .PHONY: test-integration
 test-integration:
-	${TEST_COMPOSE} ${RUN_APP} coverage run -a ${COVERAGE_REPORT_FLAG} -m pytest tests/integration
+	${TEST_COMPOSE} ${RUN_APP} coverage run -a -m pytest tests/integration
+
+.PHONY: test-full
+test-full: test-build test-migrate tests coverage-report
 
 .PHONY: tests
-tests: test-build test-unit test-integration
+tests: remove-cov-db test-unit test-integration
 
 .PHONY: test-db-shell
 test-db-shell:
@@ -101,8 +102,13 @@ test-clean:
 
 .PHONY: coverage-report
 coverage-report:
-	${TEST_COMPOSE} ${RUN_APP} coverage report ${COVERAGE_REPORT_FLAG} -m
+	${TEST_COMPOSE} ${RUN_APP} coverage report -m
 
 .PHONY: coverage-report
 generate-cov-report:
-	${TEST_COMPOSE} ${RUN_APP} coverage html -d ${COVERAGE_HTML_REPORT_PATH} ${COVERAGE_REPORT_FLAG}
+	${TEST_COMPOSE} ${RUN_APP} coverage html
+
+.PHONY: remove-cov-db
+remove-cov-db:
+	${TEST_COMPOSE} ${RUN_APP} rm ${COVERAGE_DB_FILEPATH}
+

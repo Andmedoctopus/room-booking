@@ -8,8 +8,8 @@ from alembic import context
 from room_booking.webapp import init_dependency
 from room_booking.infrastructure.models import metadata
 
-di = init_dependency()
-datasource = di.resources.datasource()
+with init_dependency() as di:
+    datasource = di.resources.datasource()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
