@@ -11,7 +11,7 @@ class Resources(containers.DeclarativeContainer):
         datasource_resourcer,
         datasource_cls=DataSource,
         engine="postgresql",
-        dialect="psycopg2",
+        dialect="asyncpg",
         username=config.db.user,
         password=config.db.password,
         host=config.db.host,

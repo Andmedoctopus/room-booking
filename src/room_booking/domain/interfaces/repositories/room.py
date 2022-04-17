@@ -6,23 +6,23 @@ from room_booking.domain.entities import RoomEntity, RoomEntityFilter
 
 class IRoomRepository(ABC):
     @abstractclassmethod
-    def create(self) -> List[int]:
+    async def create(self) -> List[int]:
         pass
 
     @abstractclassmethod
-    def get_rooms(self, room_filter: Optional[RoomEntityFilter] = None) -> List[RoomEntity]:
+    async def get_rooms(self, room_filter: Optional[RoomEntityFilter] = None) -> List[RoomEntity]:
         pass
 
     @abstractclassmethod
-    def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
+    async def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
         pass
 
     @abstractclassmethod
-    def update_room(
+    async def update_room(
         self, room_filter: RoomEntityFilter, set_room: RoomEntityFilter
     ) -> None:
         pass
 
     @abstractclassmethod
-    def delete_room(self, room_id: int) -> bool:
+    async def delete_room(self, room_id: int) -> bool:
         pass

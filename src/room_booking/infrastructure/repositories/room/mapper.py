@@ -24,8 +24,8 @@ def build_dict_from_entity(room: Union[RoomEntity, RoomEntityFilter, RoomUpdateE
     room_as_dict = asdict(room)
 
     room_as_dict.pop(RoomFields.CORDINATE.value)
-    room_as_dict[RoomFields.LATITUDE.value] = room.get_latitude()
-    room_as_dict[RoomFields.LONGITUDE.value] = room.get_longitude()
+    room_as_dict[RoomFields.LATITUDE.value] = str(room.get_latitude())
+    room_as_dict[RoomFields.LONGITUDE.value] = str(room.get_longitude())
 
     if remove_id:
         room_as_dict.pop(RoomFields.ROOM_ID_FIELD_NAME.value)

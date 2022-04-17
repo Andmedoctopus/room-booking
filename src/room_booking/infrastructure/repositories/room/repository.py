@@ -40,7 +40,7 @@ class RoomRepository(IRoomRepository):
 
         return query
 
-    def create(self, rooms: List[RoomEntity]) -> List[int]:
+    async def create(self, rooms: List[RoomEntity]) -> List[int]:
         insert_values = []
         for room in rooms:
             room_as_dict = build_dict_from_entity(room)
@@ -49,31 +49,31 @@ class RoomRepository(IRoomRepository):
 
         insert_query = insert(room_table).returning(room_table.c.room_id)
 
-        with self._datasource.open_connection() as conn:
-            rooms_obj = conn.execute(insert_query, insert_values)
+        async with self._datasource.open_connection() as conn:
+            rooms_obj = await conn.execute(insert_query, insert_values)
 
         return [room.room_id for room in rooms_obj]
 
-    def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
-        room_list = self.get_rooms(room_filter)
+    async def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
+        room_list = await self.get_rooms(room_filter)
         if len(room_list) == 0:
             raise RoomNotFound(room_filter)
 
         return room_list[0]
 
 
-    def get_rooms(self, room_filter: Optional[RoomEntityFilter] = None) -> List[RoomEntity]:
+    async def get_rooms(self, room_filter: Optional[RoomEntityFilter] = None) -> List[RoomEntity]:
         if room_filter is None:
             room_filter = RoomEntityFilter()
 
         select_query = self._patch_query_by_filter(select([room_table]), room_filter)
 
-        with self._datasource.open_connection() as conn:
-            rooms_obj = conn.execute(select_query)
+        async with self._datasource.open_connection() as conn:
+            rooms_obj = await conn.execute(select_query)
 
         return [build_room_entity(room_obj) for room_obj in rooms_obj]
 
-    def update_room(
+    async def update_room(
         self, room_filter: RoomEntityFilter, set_room: RoomUpdateEntity
     ) -> None:
         values = build_update_dict_from_entity(set_room)
@@ -81,15 +81,15 @@ class RoomRepository(IRoomRepository):
         update_query = self._patch_query_by_filter(update(room_table), room_filter)
         update_query = update_query.values(values)
 
-        with self._datasource.open_connection() as conn:
-            conn.execute(update_query)
+        async with self._datasource.open_connection() as conn:
+            await conn.execute(update_query)
 
-    def delete_room(self, room_id: int) -> bool:
+    async def delete_room(self, room_id: int) -> bool:
         delete_query = self._patch_query_by_filter(
             delete(room_table), RoomEntityFilter(room_id=room_id)
         )
 
-        with self._datasource.open_connection() as conn:
-            conn.execute(delete_query)
+        async with self._datasource.open_connection() as conn:
+            await conn.execute(delete_query)
 
         return True

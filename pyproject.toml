@@ -16,6 +16,7 @@ psycopg2 = "^2.9.3"
 pytest-mock = "^3.7.0"
 factory-boy = "^3.2.1"
 httpx = "^0.22.0"
+asyncpg = "^0.25.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.0"
@@ -28,6 +29,9 @@ pytest-factoryboy = "^2.1.0"
 pytest-mock = "^3.7.0"
 coverage = "^6.3.2"
 mypy = "^0.942"
+pytest-profiling = "^1.7.0"
+trio = "^0.20.0"
+pytest-asyncio = "^0.18.3"
 
 [tool.isort]
 profile = "black"
@@ -43,4 +47,7 @@ skip_covered = true
 
 [tool.coverage.report]
 skip_covered = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 

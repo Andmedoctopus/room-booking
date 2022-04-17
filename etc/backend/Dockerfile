@@ -34,4 +34,4 @@ COPY src ./etc/backend/wait-for-it.sh ./etc/backend/entrypoint.sh tox.ini ./
 
 ENTRYPOINT ["./entrypoint.sh"]
 
-CMD ["uvicorn", "room_booking.webapp:create_app", "--reload", "--host", "0.0.0.0", "--port", "5050"]
+CMD ["uvicorn", "--factory", "room_booking.webapp:create_app", "--reload", "--host", "0.0.0.0", "--port", "5050"]

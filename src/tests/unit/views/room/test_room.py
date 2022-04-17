@@ -3,7 +3,6 @@ from urllib.parse import urljoin
 import pytest
 from tests.unit.views.room.conftest import ROOM_PREFIX
 
-pytestmark = pytest.mark.anyio
 
 @pytest.mark.skip
 def test_create_room():
@@ -15,15 +14,21 @@ def test_update_room():
 
 
 @pytest.mark.skip
-def test_get_room():
-    pass
+async def test_get_room(client, room_repository_mock, room_entity):
+    room_repository_mock.get_room.return_value = room_entity
 
-
-async def test_get_room_empty(client, room_service_mock):
     response = await client.get(ROOM_PREFIX)
 
     assert response.is_success
+    assert response.json() == []
 
+
+async def test_get_room_empty(client, room_repository_mock):
+    room_repository_mock.get_rooms.return_value = []
+
+    response = await client.get(ROOM_PREFIX)
+
+    assert response.is_success
     assert response.json() == []
 
 @pytest.mark.skip

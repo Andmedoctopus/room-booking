@@ -1,3 +1,4 @@
+import time
 import pytest
 import pytest_factoryboy
 
@@ -14,21 +15,20 @@ def di():
         yield di
 
 @pytest.fixture
-def datasource(di):
-    return di.resources.datasource()
+async def datasource(di):
+    return await di.resources.datasource()
+
 
 @pytest.fixture(scope="function", autouse=True)
-def transaction_rollback(datasource):
-    with datasource.open_connection() as connection:
-        with connection.begin_nested() as nested:
+async def transaction_rollback(datasource):
+    async with datasource.open_connection() as connection:
+        async with connection.begin_nested() as nested:
             yield
-            nested.rollback()
+            await nested.rollback()
 
 @pytest.fixture
-def room_repository(di):
-    return di.repositories.room()
-
-
+async def room_repository(di):
+    return await di.repositories.room()
 
 @pytest.fixture
 def room_entity(room_entity_factory):

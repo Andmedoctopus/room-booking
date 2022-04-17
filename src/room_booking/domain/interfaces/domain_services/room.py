@@ -1,26 +1,28 @@
 from abc import ABC, abstractclassmethod
-from typing import List
+from typing import List, Optional
 
 from room_booking.domain.entities import RoomEntity, RoomEntityFilter
 
 
 class IRoomService(ABC):
     @abstractclassmethod
-    def create(self) -> int:
+    async def create(self) -> List[int]:
         pass
 
     @abstractclassmethod
-    def get_rooms(self, room_filter: RoomEntityFilter) -> List[RoomEntity]:
+    async def get_room(self, room_filter: Optional[RoomEntityFilter] = None) -> RoomEntity:
         pass
 
     @abstractclassmethod
-    def get_room(self, room_filter: RoomEntityFilter) -> RoomEntity:
+    async def get_rooms(self, room_filter: Optional[RoomEntityFilter] = None) -> List[RoomEntity]:
         pass
 
     @abstractclassmethod
-    def update_room(self, room_filter: RoomEntityFilter) -> None:
+    async def update_room(
+        self, room_filter: RoomEntityFilter, set_room: RoomEntityFilter
+    ) -> None:
         pass
 
     @abstractclassmethod
-    def delete_room(self, room_id: int) -> bool:
+    async def delete_room(self, room_id: int) -> bool:
         pass

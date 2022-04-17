@@ -16,7 +16,7 @@ router = APIRouter(prefix="/rooms", tags=["rooms"])
 async def get_rooms(
     room_service: IRoomService = Depends(Provide[Services.room]),
 ) -> List[RoomSerializer]:
-    rooms = room_service.get_rooms(RoomEntityFilter())
+    rooms = await room_service.get_rooms()
     serialized_rooms = [
         RoomSerializer(
             id=room.room_id,
@@ -34,7 +34,7 @@ async def get_rooms(
 async def get_room(
     room_id: int, room_service: IRoomService = Depends(Provide[Services.room])
 ) -> RoomSerializer:
-    room = room_service.get_room(RoomEntityFilter(id=room_id))
+    room = await room_service.get_room(RoomEntityFilter(room_id=room_id))
     return RoomSerializer(
         id=room.room_id,
         name=room.name,
@@ -51,14 +51,14 @@ async def create_room(
 ) -> List[int]:
     rooms = [
         RoomEntity(
-            id=None,
+            room_id=None,
             name=room.name,
             floor=room.floor,
             number=room.number,
         )
         for room in request_body.rooms
     ]
-    return room_service.create(rooms)
+    return await room_service.create(rooms)
 
 
 @router.patch("/{room_id}")
@@ -69,7 +69,7 @@ async def update_room(
     room_service: IRoomService = Depends(Provide[Services.room]),
 ) -> RoomSerializer:
     room_service.update_room(
-        RoomEntityFilter(id=room_id),
+        RoomEntityFilter(room_id=room_id),
         RoomEntity(
             id=None,
             name=update_values.name,
@@ -77,7 +77,7 @@ async def update_room(
             number=update_values.number,
         ),
     )
-    room = room_service.get_room(RoomEntityFilter(id=room_id))
+    room = room_service.get_room(RoomEntityFilter(room_id=room_id))
     return RoomSerializer(
         id=room.room_id,
         name=room.name,

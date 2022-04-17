@@ -1,9 +1,11 @@
+import asyncio
 from typing import Optional
 from dataclasses import dataclass
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 
 from dependency_injector import resources
 from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.engine import Engine, Connection
 
 from room_booking.config import Settings
@@ -36,29 +38,30 @@ class DataSource:
         )
 
     def init_engine(self):
-        self._db_engine: Engine = create_engine(self.get_connection_string())
+        self._db_engine: Engine = create_async_engine(
+            self.get_connection_string(),
+        )
 
-    def init_connection(self):
-        self._connection: Connection = self._db_engine.connect()
-
-    def init(self):
+    async def init(self):
         self.init_engine()
-        self.init_connection()
+        await asyncio.sleep(0)
 
-    def shutdown(self):
-        self._connection.close()
+    async def shutdown(self):
+        await self._db_engine.dispose()
 
-    @contextmanager
-    def open_connection(self):
-        with self._connection.begin():
-            yield self._connection
+    @asynccontextmanager
+    async def open_connection(self):
+        async with self._db_engine.begin() as connection:
+            yield connection
 
 
 
-def datasource_resourcer(datasource_cls, *args, **kwargs):
+async def datasource_resourcer(datasource_cls, *args, **kwargs):
     datasource = datasource_cls(*args, **kwargs)
-    datasource.init()
+    print('start init')
+    await datasource.init()
 
     yield datasource
 
-    datasource.shutdown()
+    print('shutdown')
+    await datasource.shutdown()
