@@ -24,6 +24,8 @@ def init_dependency(init_resources=True):
     yield di_application
 
     if init_resources:
+        # check event loop
+        loop = asyncio.get_event_loop()
         loop.run_until_complete(di_application.shutdown_resources())
 
 

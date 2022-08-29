@@ -1,4 +1,5 @@
 import time
+from unittest.mock import MagicMock
 import pytest
 import pytest_factoryboy
 
@@ -18,13 +19,30 @@ def di():
 async def datasource(di):
     return await di.resources.datasource()
 
+@pytest.fixture
+def datasource_container(di):
+    return di.resources.datasource
+
 
 @pytest.fixture(scope="function", autouse=True)
-async def transaction_rollback(datasource):
+async def transaction_rollback(datasource_container, mocker):
+    datasource = await datasource_container()
     async with datasource.open_connection() as connection:
-        async with connection.begin_nested() as nested:
+        print(f'>>> OPEN CONNECTION {connection}')
+
+        mock = mocker.Mock(datasource)
+        class DatasourceMockConnection:
+            async def __aenter__(self):
+                async with connection.begin_nested() as nested:
+                    self.nested = nested
+                    return nested
+
+            async def __aexit__(self, exc_type, exc_val, exc_tb):
+                await self.nested.rollback()
+
+        mock.open_connection = DatasourceMockConnection
+        with datasource_container.override(mock):
             yield
-            await nested.rollback()
 
 @pytest.fixture
 async def room_repository(di):
@@ -39,8 +57,9 @@ def room_entities(room_entity_factory):
     return [room_entity_factory() for _ in range(5)]
 
 @pytest.fixture
-def created_room(room_repository, room_entity):
-    return replace(room_entity, room_id=room_repository.create([room_entity])[0])
+async def created_room(room_repository, room_entity):
+    room = await room_repository.create([room_entity])
+    return replace(room_entity, room_id=room[0])
 
 @pytest.fixture
 def rooms_with_same_name_field(room_entities):

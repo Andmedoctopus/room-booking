@@ -7,6 +7,7 @@ from dependency_injector import resources
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.engine import Engine, Connection
+from sqlalchemy.pool import NullPool
 
 from room_booking.config import Settings
 from room_booking.infrastructure.datasource.constants import DB_CONNECTION_TEMPLATE
@@ -24,7 +25,6 @@ class DataSource:
 
     def __post_init__(self):
         self._db_engine: Optional[Engine] = None
-        self._connection = None
 
     def get_connection_string(self) -> str:
         return DB_CONNECTION_TEMPLATE.format(
@@ -40,6 +40,8 @@ class DataSource:
     def init_engine(self):
         self._db_engine: Engine = create_async_engine(
             self.get_connection_string(),
+            pool_size=20,
+            max_overflow=0,
         )
 
     async def init(self):

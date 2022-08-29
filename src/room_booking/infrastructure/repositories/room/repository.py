@@ -50,7 +50,9 @@ class RoomRepository(IRoomRepository):
         insert_query = insert(room_table).returning(room_table.c.room_id)
 
         async with self._datasource.open_connection() as conn:
+            print(f'>>> IN REPOSITORY CONNECTION {conn}')
             rooms_obj = await conn.execute(insert_query, insert_values)
+            await conn.commit()
 
         return [room.room_id for room in rooms_obj]
 
@@ -69,7 +71,9 @@ class RoomRepository(IRoomRepository):
         select_query = self._patch_query_by_filter(select([room_table]), room_filter)
 
         async with self._datasource.open_connection() as conn:
+            print(f'>>> IN REPOSITORY CONNECTION {conn}')
             rooms_obj = await conn.execute(select_query)
+            await conn.commit()
 
         return [build_room_entity(room_obj) for room_obj in rooms_obj]
 
@@ -82,7 +86,9 @@ class RoomRepository(IRoomRepository):
         update_query = update_query.values(values)
 
         async with self._datasource.open_connection() as conn:
+            print(f'>>> IN REPOSITORY CONNECTION {conn}')
             await conn.execute(update_query)
+            await conn.commit()
 
     async def delete_room(self, room_id: int) -> bool:
         delete_query = self._patch_query_by_filter(
@@ -90,6 +96,8 @@ class RoomRepository(IRoomRepository):
         )
 
         async with self._datasource.open_connection() as conn:
+            print(f'>>> IN REPOSITORY CONNECTION {conn}')
             await conn.execute(delete_query)
+            await conn.commit()
 
         return True
