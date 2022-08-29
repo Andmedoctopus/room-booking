@@ -1,0 +1,2 @@
+ROOM_PREFIX = '/rooms/'
+

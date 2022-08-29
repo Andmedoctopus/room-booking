@@ -6,26 +6,20 @@ services:
       context: ./
       dockerfile: ./etc/backend/Dockerfile
     env_file:
-      - ./etc/backend/env/dev.env
-      - ./etc/db/env/dev.env
+      - ./etc/backend/env/test.env
+      - ./etc/db/env/test.env
     depends_on:
       - db
     volumes:
       - ./src/room_booking:/home/room_booking/room_booking
       - ./src/tests:/home/room_booking/tests
       - ./src/alembic:/home/room_booking/alembic
-    ports:
-      - 5050:5050
 
   db:
     image: postgres:13.3
     volumes:
       - ./etc/db/entypoints:/docker-entrypoint-initdb.d
-      - pgdata:/var/lib/postgresql/data
     env_file: 
-      - ./etc/db/env/dev.env
-    ports:
-      - 5432:5432
+      - ./etc/db/env/test.env
 
-volumes:
-  pgdata:
+  
