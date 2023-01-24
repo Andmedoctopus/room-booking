@@ -25,4 +25,3 @@ class RoomEntityFilter:
     floor: Optional[int] = None
     number: Optional[int] = None
     cordinate: Optional[Cordinate] = None
-
