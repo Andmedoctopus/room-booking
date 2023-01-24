@@ -27,7 +27,7 @@ import-check:
 
 .PHONY: fix-imports
 fix-imports:
-	docker-compose run --rm app sh -c "autoflake -r --in-place --ignore-init-module-imports --remove-all-unused-imports ${PROJECT_CODE_PATH} && isort ${PROJECT_CODE_PATH}"
+	docker compose run --rm app sh -c "autoflake -r --in-place --ignore-init-module-imports --remove-all-unused-imports ${PROJECT_CODE_PATH} && isort ${PROJECT_CODE_PATH}"
 
 .PHONY: flake8
 flake8:
