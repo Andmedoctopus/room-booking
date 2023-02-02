@@ -1,4 +1,4 @@
-PROJECT_CODE_PATH = /home/maksim/test_ci/room_booking
+PROJECT_CODE_PATH = /home/maksim/test_ci/room_booking/src/room_booking
 
 
 .PHONY: db-bash
